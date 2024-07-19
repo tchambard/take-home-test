@@ -15,7 +15,17 @@ const monitoringSeeds: Partial<Monitoring>[] = [
 	{
 		name: "Test Monitoring 3",
 		eventAbi: "{}",
-		contractAddress: "0x0987654321abcdef0987654321abcdef09876543",
+		contractAddress: "0x1237894321abcdef0987654321abcdef09123789",
+	},
+	{
+		name: "Test Monitoring 4",
+		eventAbi: "{}",
+		contractAddress: "0x7657654321abcdef0987654321abcdef09765765",
+	},
+	{
+		name: "Test Monitoring 5",
+		eventAbi: "{}",
+		contractAddress: "0x9875434321abcdef0987654321abcdef09987543",
 	},
 ];
 

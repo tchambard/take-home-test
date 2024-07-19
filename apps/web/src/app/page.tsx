@@ -7,7 +7,7 @@ async function Home() {
 		).then((res) => res.json());
 
 		return (
-			<div className="flex gap-4 justify-center p-20">
+    		<div className="flex flex-wrap gap-4 justify-start p-20">
 				{allMonitoring.map(({ id, name, eventAbi, contractAddress }) => (
 					<Card
 						key={id}
