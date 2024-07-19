@@ -1,22 +1,46 @@
+import Pagination from "@/component/pagination";
+import type { Monitoring } from "@/database/schema";
 import { Card } from "../component/card";
+import type { Page } from "./api/monitoring/route";
 
-async function Home() {
+async function getMonitoringPage(
+	page = 1,
+	limit = 10,
+): Promise<Page<Monitoring>> {
+	const res = await fetch(
+		`http://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/monitoring?page=${page}&limit=${limit}`,
+		{ cache: "no-store" },
+	);
+	return res.json();
+}
+
+interface HomeProps {
+	searchParams: { page?: string };
+}
+
+async function Home({ searchParams }: HomeProps) {
+	const currentPage = Number(searchParams.page) || 1;
+	const itemsPerPage = 10;
+
 	try {
-		const allMonitoring = await fetch(
-			`http://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/monitoring`,
-		).then((res) => res.json());
-
+		const { data: monitorings, info } = await getMonitoringPage(
+			currentPage,
+			itemsPerPage,
+		);
 		return (
-    		<div className="flex flex-wrap gap-4 justify-start p-20">
-				{allMonitoring.map(({ id, name, eventAbi, contractAddress }) => (
-					<Card
-						key={id}
-						id={id}
-						name={name}
-						eventAbi={eventAbi}
-						contractAddress={contractAddress}
-					/>
-				))}
+			<div className="p-8">
+				<div className="flex flex-wrap gap-4 justify-start p-20">
+					{monitorings.map(({ id, name, eventAbi, contractAddress }) => (
+						<Card
+							key={id}
+							id={id.toString()}
+							name={name}
+							eventAbi={eventAbi}
+							contractAddress={contractAddress}
+						/>
+					))}
+				</div>
+				<Pagination currentPage={currentPage} totalPages={info.totalPages} />
 			</div>
 		);
 	} catch (error) {

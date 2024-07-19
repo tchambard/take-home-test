@@ -12,16 +12,20 @@ export type Event = {
 	transactionHash: string;
 };
 
-export const monitoring = pgTable("monitoring", {
-	id: serial("id").primaryKey(),
-	name: text("name"),
-	eventAbi: text("eventAbi"),
-	contractAddress: text("contractAddress"),
-}, (table) => {
-	return {
-		uniqueContractAddress: unique().on(table.contractAddress),
-	}
-});
+export const monitoring = pgTable(
+	"monitoring",
+	{
+		id: serial("id").primaryKey(),
+		name: text("name"),
+		eventAbi: text("eventAbi"),
+		contractAddress: text("contractAddress"),
+	},
+	(table) => {
+		return {
+			uniqueContractAddress: unique().on(table.contractAddress),
+		};
+	},
+);
 
 export const event = pgTable("event", {
 	monitoringId: serial("monitoringId"),
