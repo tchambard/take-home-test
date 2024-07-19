@@ -50,6 +50,14 @@ As I'm not familiar with Next.js, I will go ahead on task 2 (bugs fixing) and I 
 2) fix duplicate monitorings using pg unique constraint. In real world, I should have implement a migration script to deduplicate existing data in monitoring database and mutate events to be linked to deduplicated monitoring records.
 3) this is more a feature than a bug ! I added pagination mechanism to prevent overload when having lot of monitorings. 
 
+## Features
+
+### 3. Form
+
+branch: feat/monitoring/new-form
+
+Simple implementation with next/actions. This is very light. I should have do minimal errors handling and display loading information, but I didn't. This feature reveals that the list of monitorings objects should be sortable (probably sorted by date DESC by default), in order to see last created monitorings. We should alos have search capabilities on the list to be able to find what we are looking for.
+
 # Justification for any modifications.
 
 # Good and bad aspects of my work.
