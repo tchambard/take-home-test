@@ -1,4 +1,4 @@
-import { pgTable, serial, text } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, unique } from "drizzle-orm/pg-core";
 
 export type Monitoring = {
 	id: number;
@@ -17,6 +17,10 @@ export const monitoring = pgTable("monitoring", {
 	name: text("name"),
 	eventAbi: text("eventAbi"),
 	contractAddress: text("contractAddress"),
+}, (table) => {
+	return {
+		uniqueContractAddress: unique().on(table.contractAddress),
+	}
 });
 
 export const event = pgTable("event", {
