@@ -34,7 +34,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.7.3",
 		"@commitlint/cli": "^17.4.2",
-
 		"@ns3/nx-serverless": "*",
 		"@nx/cypress": "18.3.4",
 		"@nx/eslint": "18.3.4",
