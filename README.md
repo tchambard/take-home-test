@@ -44,6 +44,12 @@ As I'm not familiar with Next.js, I will go ahead on task 2 (bugs fixing) and I 
 
 - Add `biomejs` configuration file to apply formatting same for rules on each developer environment.
 
+## Bugs branch changes
+
+1) fix homepage display using flex-wrap 
+2) fix duplicate monitorings using pg unique constraint. In real world, I should have implement a migration script to deduplicate existing data in monitoring database and mutate events to be linked to deduplicated monitoring records.
+3) this is more a feature than a bug ! I added pagination mechanism to prevent overload when having lot of monitorings. 
+
 # Justification for any modifications.
 
 # Good and bad aspects of my work.
