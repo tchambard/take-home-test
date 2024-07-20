@@ -1,0 +1,37 @@
+{
+	"name": "lambda-monitoring",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/monitoring",
+	"projectType": "application",
+	"tags": [],
+	"targets": {
+		"dev": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/monitoring",
+				"command": "serverless dev"
+			}
+		},
+		"deploy": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/monitoring",
+				"command": "serverless deploy"
+			}
+		},
+		"db:push": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/monitoring",
+				"command": "drizzle-kit push"
+			}
+		},
+		"db:seed": {
+			"executor": "nx:run-commands",
+			"options": {
+				"cwd": "apps/monitoring",
+				"command": "bun run ./src/services/seed.ts"
+			}
+		}
+	}
+}
