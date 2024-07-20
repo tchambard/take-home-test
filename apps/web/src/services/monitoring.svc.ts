@@ -16,7 +16,7 @@ export type Monitoring = {
 	contractAddress: string;
 };
 
-export type Event = {
+export type MonitoringEvent = {
 	monitoringId: string;
 	transactionHash: string;
 };
