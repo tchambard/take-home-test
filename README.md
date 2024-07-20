@@ -58,6 +58,12 @@ branch: feat/monitoring/new-form
 
 Simple implementation with next/actions. This is very light. I should have do minimal errors handling and display loading information, but I didn't. This feature reveals that the list of monitorings objects should be sortable (probably sorted by date DESC by default), in order to see last created monitorings. We should alos have search capabilities on the list to be able to find what we are looking for.
 
-# Justification for any modifications.
+### 4. Migration
+
+branch: feat/monitoring-lambda/aws
+
+I created new AWS personnal account and installed `serverless` globally with npm. Then created new serverless project `apps/monitoring`.
+
+You need to deploy the lambda using `bun run lambda:deploy` after creating and giving needed information into `.env` (copied from `.env.template`) into `apps/monitoring` directory.
 
 # Good and bad aspects of my work.

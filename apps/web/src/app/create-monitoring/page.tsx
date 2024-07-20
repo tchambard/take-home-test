@@ -1,15 +1,14 @@
+import { addMonitoring } from "@/services/monitoring.svc";
 import Head from "next/head";
 import { redirect } from "next/navigation";
 
-const addMonitoring = async (formData: FormData): Promise<void> => {
+const addMonitoringAction = async (formData: FormData): Promise<void> => {
 	"use server";
-	const name = formData.get("name");
-	const eventAbi = formData.get("eventAbi");
-	const contractAddress = formData.get("contractAddress");
-	await fetch(`http://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/monitoring`, {
-		method: "POST",
-		body: JSON.stringify({ name, eventAbi, contractAddress }),
-	});
+	// TODO: validation
+	const name = formData.get("name") as string;
+	const eventAbi = formData.get("eventAbi") as string;
+	const contractAddress = formData.get("contractAddress") as string;
+	await addMonitoring(name, eventAbi, contractAddress);
 	// TODO: handle errors
 	redirect("/");
 };
@@ -26,7 +25,7 @@ const CreateMonitoringPage: React.FC = () => {
 				</h1>
 
 				<form
-					action={addMonitoring}
+					action={addMonitoringAction}
 					method="POST"
 					className="max-w-md mx-auto p-4 bg-white shadow-md rounded"
 				>

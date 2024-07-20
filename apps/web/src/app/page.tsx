@@ -1,19 +1,7 @@
+import { Card } from "@/component/card";
 import Pagination from "@/component/pagination";
-import type { Monitoring } from "@/database/schema";
+import { getMonitoringPage } from "@/services/monitoring.svc";
 import Link from "next/link";
-import { Card } from "../component/card";
-import type { Page } from "./api/monitoring/route";
-
-async function getMonitoringPage(
-	page = 1,
-	limit = 10,
-): Promise<Page<Monitoring>> {
-	const res = await fetch(
-		`http://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/monitoring?page=${page}&limit=${limit}`,
-		{ cache: "no-store" },
-	);
-	return res.json();
-}
 
 interface HomeProps {
 	searchParams: { page?: string };

@@ -7,8 +7,9 @@
 	},
 	"scripts": {
 		"dev": "nx run-many -t serve",
-		"db:push": "nx run web:db:push",
-		"db:seed": "nx run web:db:seed"
+		"aws:deploy": "nx run lambda-monitoring:deploy",
+		"db:push": "nx run lambda-monitoring:db:push",
+		"db:seed": "nx run lambda-monitoring:db:seed"
 	},
 	"private": true,
 	"dependencies": {
