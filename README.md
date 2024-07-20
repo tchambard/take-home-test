@@ -79,3 +79,18 @@ I should have implemented the API endpoints:
 I should have implemented the script to inject seeds into `event` DB.
 
 I should have added a foreign key on event table to add a relation to monitoring table
+
+# Bad aspects of my work.
+
+I clearly did not realize all points, but I passed enough time on the test for now.
+
+I do not master the techs used inside this exercice.  So I will not discover all aspects right now. 
+I'm not very confident with my work about security and architecture as I never used SSR and serverless. But honestly, I'm not affraid to going deeper in understanding of these techniques.
+
+- I did almost nothing about styling to improve monitoring list render.
+
+- I did nothing about unit tests... This is not acceptable for production ready code !
+
+- I did not do validation on monitoring creation form
+
+- I did not do validation on API endpoints
