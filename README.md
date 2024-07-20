@@ -66,4 +66,16 @@ I created new AWS personnal account and installed `serverless` globally with npm
 
 You need to deploy the lambda using `bun run lambda:deploy` after creating and giving needed information into `.env` (copied from `.env.template`) into `apps/monitoring` directory.
 
-# Good and bad aspects of my work.
+### 5. Monitoring
+
+branch: feat/web/monitoring-detail
+
+I just implemented the next.js page.
+
+I should have implemented the API endpoints:
+- GET /api/monitoring/:id   -> Monitoring detail
+- GET /api/monitoring/:id   -> Monitoring events with pagination
+
+I should have implemented the script to inject seeds into `event` DB.
+
+I should have added a foreign key on event table to add a relation to monitoring table
