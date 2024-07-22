@@ -1,4 +1,5 @@
 import { pgTable, serial, text, unique } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm/relations";
 
 export type Monitoring = {
 	id: number;
@@ -28,6 +29,17 @@ export const monitoring = pgTable(
 );
 
 export const event = pgTable("event", {
-	monitoringId: serial("monitoringId"),
+	monitoringId: serial("monitoringId").notNull().references(() => monitoring.id),
 	transactionHash: text("transactionHash"),
 });
+
+export const monitoringRelations = relations(monitoring, ({ many }) => ({
+	events: many(event),
+}));
+
+export const eventRelations = relations(event, ({ one }) => ({
+	monitoring: one(monitoring, {
+		fields: [event.monitoringId],
+		references: [monitoring.id],
+	}),
+}));
