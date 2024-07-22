@@ -1,16 +1,18 @@
 import { pgTable, serial, text, unique } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 
-export type Monitoring = {
+// Maybe all fields should be mandatory ?
+export type MonitoringDb = {
 	id: number;
-	name: string;
-	eventAbi: string;
-	contractAddress: string;
+	name: string | null;
+	eventAbi: string | null;
+	contractAddress: string | null;
 };
 
-export type Event = {
-	monitoringId: string;
-	transactionHash: string;
+// Maybe all fields should be mandatory ?
+export type EventDb = {
+	monitoringId: number;
+	transactionHash: string | null;
 };
 
 export const monitoring = pgTable(

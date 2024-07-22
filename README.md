@@ -68,17 +68,24 @@ You need to deploy the lambda using `bun run lambda:deploy` after creating and g
 
 ### 5. Monitoring
 
-branch: feat/web/monitoring-detail
+branch: feat/web/monitoring-detail (deprecated)
+branch: feat/monitoring-events (second chance :)
 
-I just implemented the next.js page.
-
-I should have implemented the API endpoints:
+API Routes: 
+I have implemented the API endpoints:
 - GET /api/monitoring/:id   -> Monitoring detail
 - GET /api/monitoring/:id   -> Monitoring events with pagination
 
-I should have implemented the script to inject seeds into `event` DB.
+Changes: 
 
-I should have added a foreign key on event table to add a relation to monitoring table
+- I added a foreign key on event table and relations with monitoring table
+
+- I reorganized files about db inside `db` folder.
+
+- I changed types defined into schema.ts in oder to match with DB structures. (But I'm pretty sure some of the optional fields should not be optionnal).
+
+- I changed the way to generate seeds to be more efficient with data generation.
+
 
 # Bad aspects of my work.
 
