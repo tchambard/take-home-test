@@ -30,7 +30,7 @@
 			"executor": "nx:run-commands",
 			"options": {
 				"cwd": "apps/monitoring",
-				"command": "bun run ./src/seed.ts"
+				"command": "bun run ./src/db/seed.ts"
 			}
 		}
 	}

@@ -11,6 +11,7 @@ export type MonitoringDb = {
 
 // Maybe all fields should be mandatory ?
 export type EventDb = {
+	id: number;
 	monitoringId: number;
 	transactionHash: string | null;
 };
@@ -31,7 +32,10 @@ export const monitoring = pgTable(
 );
 
 export const event = pgTable("event", {
-	monitoringId: serial("monitoringId").notNull().references(() => monitoring.id),
+	id: serial("id").primaryKey(),
+	monitoringId: serial("monitoringId")
+		.notNull()
+		.references(() => monitoring.id),
 	transactionHash: text("transactionHash"),
 });
 

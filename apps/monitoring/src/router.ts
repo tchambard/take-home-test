@@ -54,7 +54,7 @@ apiRouter.get("/monitoring", async (req, res, next) => {
 		};
 		return res.status(200).json(pageResult);
 	} catch (e) {
-		console.error(`Error: ${e.stack}`);
+		console.error(`Error: ${e}`);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
@@ -70,12 +70,12 @@ apiRouter.post("/monitoring", async (req, res, next) => {
 
 		return res.status(200).json(newMonitoring);
 	} catch (e) {
-		console.error(`Error: ${e.stack}`);
+		console.error(`Error: ${e}`);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
 
-apiRouter.post("/monitoring/:id", async (req, res, next) => {
+apiRouter.get("/monitoring/:id", async (req, res, next) => {
 	try {
 		const monitoringId = +req.params.id;
 		const monitoringDetail = await db.query.monitoring.findFirst({ with: { id: monitoringId } });
@@ -84,7 +84,7 @@ apiRouter.post("/monitoring/:id", async (req, res, next) => {
 		}
 		return res.status(404).send();
 	} catch (e) {
-		console.error(`Error: ${e.stack}`);
+		console.error(`Error: ${e}`);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
@@ -119,7 +119,7 @@ apiRouter.get("/monitoring/:id/events", async (req, res) => {
 
 		return res.status(200).json(pageResult);
 	} catch (e) {
-		console.error(`Error: ${e.stack}`);
+		console.error(`Error: ${e}`);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });

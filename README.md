@@ -71,6 +71,8 @@ You need to deploy the lambda using `bun run lambda:deploy` after creating and g
 branch: feat/web/monitoring-detail (deprecated)
 branch: feat/monitoring-events (second chance :)
 
+#### Step 1: api routes for events pagination and monitoring details
+
 API Routes: 
 I have implemented the API endpoints:
 - GET /api/monitoring/:id   -> Monitoring detail
@@ -86,6 +88,24 @@ Changes:
 
 - I changed the way to generate seeds to be more efficient with data generation.
 
+#### Step 2: listening events with websocket
+
+I first tried to use SSE mechanism, but I didn't found lot of documentation about lambda and SSE...
+
+After multiple investigation to use a classic solution (pg trigger + function + client.listen) to listen inserted events in `event` table.  
+I finally used supabase client (I'm not really ok with that !) to be able to listen db changes.
+
+Changes: 
+
+- I added a primary key (id) on `event` table.
+
+- I enabled `Database publication` on my `event` table in supabase.
+
+- I implemented a websocket endpoint in my serverless configuration and added corresponding handler to listen `event` table changes with supabase client.
+
+- I used same data mapper as in api router.
+
+- I configured esbuild to handle `pg` troubles on serverless deployment.
 
 # Bad aspects of my work.
 
