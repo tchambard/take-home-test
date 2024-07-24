@@ -1,10 +1,6 @@
 import MonitoringEventsHistory from "@/component/MonitoringEventsHistory";
 import LiveMonitoringEvents from "@/component/MonitoringEventsLive";
-import Pagination from "@/component/pagination";
-import {
-	getMonitoringDetail,
-	getMonitoringEventsPage,
-} from "@/services/monitoring.api";
+import { getMonitoringDetail } from "@/services/monitoring.api";
 import Link from "next/link";
 import type React from "react";
 
@@ -18,15 +14,9 @@ const MonitoringDetailPage: React.FC<MonitoringDetailPageProps> = async ({
 	searchParams,
 }) => {
 	const { id } = params;
-	console.log("id :>> ", JSON.stringify(id, null, 2));
 	const currentPage = Number(searchParams.page) || 1;
 	const itemsPerPage = 10;
 	const monitoring = await getMonitoringDetail(id);
-	const { data: events, info } = await getMonitoringEventsPage(
-		id,
-		currentPage,
-		itemsPerPage,
-	);
 
 	return (
 		<div className="container mx-auto p-6 bg-gray-100 min-h-screen">

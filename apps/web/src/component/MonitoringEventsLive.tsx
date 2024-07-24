@@ -1,8 +1,14 @@
 "use client";
 
 import type { MonitoringEvent } from "@/services/monitoring.api";
+import { createClient } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import MonitoringEventsTable from "./MonitoringEventsTable";
+
+const supabase = createClient(
+	process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
+);
 
 export default function LiveMonitoringEvents({
 	monitoringId,
@@ -12,40 +18,32 @@ export default function LiveMonitoringEvents({
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		const ws = new WebSocket(
-			process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_WSS_URL as string,
-		);
+		console.log(`> Listening monitoring events: ID=${monitoringId}...`);
 
-		ws.onopen = () => {
-			console.log("Connection succeeded");
-			ws?.send(`{"type":"listen", "monitoringId": "${+monitoringId}"}`);
-			setIsConnected(true);
-		};
-
-		ws.onmessage = (event) => {
-			console.log("Received message:", event.data);
-			const message = JSON.parse(event.data);
-			try {
-				if (message.type === "new_event") {
-					setEvents([message.data, ...events]);
+		const channel = supabase
+			.channel("db-changes")
+			.on(
+				"postgres_changes",
+				{
+					event: "INSERT",
+					schema: "public",
+					table: "event",
+					filter: `monitoringId=eq.${monitoringId}`,
+				},
+				async (payload) => {
+					console.log("Change received!", payload);
+					setEvents([payload.new as MonitoringEvent, ...events]);
+				},
+			)
+			.subscribe((status) => {
+				console.log("Subscription status:", status);
+				if (status === "SUBSCRIBED") {
+					setIsConnected(true);
 				}
-			} catch (e) {
-				console.log("Message data parsing error");
-			}
-		};
-
-		ws.onclose = () => {
-			console.log("Connection closed");
-			setIsConnected(false);
-		};
-
-		ws.onerror = (error) => {
-			console.error("wss error:", error);
-			ws?.close();
-		};
+			});
 
 		return () => {
-			ws?.close();
+			channel.unsubscribe();
 		};
 	}, []);
 

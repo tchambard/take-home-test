@@ -2,6 +2,7 @@ import cors from "cors";
 import { eq, sql } from "drizzle-orm/sql";
 import express from "express";
 import serverless from "serverless-http";
+import "source-map-support/register";
 
 import { db } from "./db/db";
 import {

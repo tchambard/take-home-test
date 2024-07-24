@@ -12,37 +12,14 @@ build:
     external:
       - 'pg'
 
-custom:
-  stage: ${opt:stage, 'dev'}
-
 provider:
   name: aws
   runtime: nodejs20.x
   memorySize: 1024
   environment:
       DATABASE_URL: ${env:DATABASE_URL}
-      SUPABASE_URL: ${env:SUPABASE_URL}
-      SUPABASE_ANON_KEY: ${env:SUPABASE_ANON_KEY}
-      APIG_ENDPOINT:
-        Fn::Join:
-          - ''
-          - - Ref: WebsocketsApi
-            - .execute-api.
-            - Ref: AWS::Region
-            - .amazonaws.com/
-            - ${self:custom.stage}
-
 functions:
   api:
     handler: src/router.handler
     events:
       - httpApi: "*"
-  websocket:
-    handler: src/websocket.handler
-    events:
-      - websocket:
-          route: $connect
-      - websocket:
-          route: $default
-      - websocket:
-          route: $disconnect
