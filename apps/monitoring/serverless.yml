@@ -21,6 +21,8 @@ provider:
   memorySize: 1024
   environment:
       DATABASE_URL: ${env:DATABASE_URL}
+      SUPABASE_URL: ${env:SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${env:SUPABASE_ANON_KEY}
       APIG_ENDPOINT:
         Fn::Join:
           - ''
