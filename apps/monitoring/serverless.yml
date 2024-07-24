@@ -1,0 +1,25 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: ${env:AWS_ORG}
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: monitoring
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: monitoring
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    external:
+      - 'pg'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  memorySize: 1024
+  environment:
+      DATABASE_URL: ${env:DATABASE_URL}
+functions:
+  api:
+    handler: src/router.handler
+    events:
+      - httpApi: "*"

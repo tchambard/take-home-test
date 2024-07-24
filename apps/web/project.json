@@ -40,20 +40,6 @@
 					"port": 3000
 				}
 			}
-		},
-		"db:push": {
-			"executor": "nx:run-commands",
-			"options": {
-				"cwd": "apps/web",
-				"command": "drizzle-kit push"
-			}
-		},
-		"db:seed": {
-			"executor": "nx:run-commands",
-			"options": {
-				"cwd": "apps/web",
-				"command": "bun run ./src/database/seed.ts"
-			}
 		}
 	}
 }

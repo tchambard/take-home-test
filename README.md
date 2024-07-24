@@ -44,6 +44,171 @@ As I'm not familiar with Next.js, I will go ahead on task 2 (bugs fixing) and I 
 
 - Add `biomejs` configuration file to apply formatting same for rules on each developer environment.
 
-# Justification for any modifications.
+### 1. Analysis of the given codebase
 
-# Good and bad aspects of my work.
+#### Identified tools:
+
+- `nx` for mono repo management
+- `bun` for dependency management
+- `drizzle` for ORM
+- `next.js` as web application development framework
+- `tailwind` for styling
+- `vercel` for front app deployment
+- `biomejs` for code formatter (no config set)
+- `eslint` for code linting (no config set)
+- `cypress` for end-to-end tests
+- `typescript` as main language
+
+#### Structure
+I have not so much to say about folder structure. I would probably not named `app` directory like that...
+
+#### Architecture
+
+API routes defined in `src/app/api/monitoring/route` should not manipulate db directly with drizzle. 
+
+It is important to separate logic in different layers. 
+
+Here I would have introduce a `src/services/monitoring/monitoring.ts` service file. 
+
+The good point is that implemented pages are curretly server side rendered, which means connection to DB is not exposed on the browser (security point).
+
+#### Security
+
+- The POST route: 
+
+We MUST add an authentication + authorization mechanism to protect the POST route in order to prevent anyone to create DB entries.
+
+We MUST add data validation to prevent any kind of attack (XSS for instance)
+
+- The GET route 
+
+It could probably stay like that (without auth needed), but maybe we could add some limitation like rate limits for instance.
+
+#### Maintainability
+
+No tests at all. This is not acceptable.
+
+Unit tests, integration tests and end-to-end tests would ensure our code base is safe, robust, resilient and scalable.
+
+#### Code style
+
+ESlint rules are very important to force common practices in developers teams. At least biomejs (or prettier) formatter rules allows to prevent unexpected changes...
+
+
+## Bugs branch changes
+
+1) fix homepage display using flex-wrap 
+2) fix duplicate monitorings using pg unique constraint. In real world, I should have implement a migration script to deduplicate existing data in monitoring database and mutate events to be linked to deduplicated monitoring records.
+3) this is more a feature than a bug ! I added pagination mechanism to prevent overload when having lot of monitorings. 
+
+## Features
+
+### 3. Form
+
+branch: feat/monitoring/new-form
+
+Simple implementation with next/actions. This is very light. I should have do minimal errors handling and display loading information, but I didn't. This feature reveals that the list of monitorings objects should be sortable (probably sorted by date DESC by default), in order to see last created monitorings. We should alos have search capabilities on the list to be able to find what we are looking for.
+
+### 4. Migration
+
+branch: feat/monitoring-lambda/aws
+
+I created new AWS personnal account and installed `serverless` globally with npm. Then created new serverless project `apps/monitoring`.
+
+You need to deploy the lambda using `bun run lambda:deploy` after creating and giving needed information into `.env` (copied from `.env.template`) into `apps/monitoring` directory.
+
+### 5. Monitoring
+
+branch: feat/web/monitoring-detail (deprecated)
+branch: feat/monitoring-events (second chance :)
+
+#### Step 1: api routes for events pagination and monitoring details
+
+API Routes: 
+I have implemented the API endpoints:
+- GET /api/monitoring/:id   -> Monitoring detail
+- GET /api/monitoring/:id/events   -> Monitoring events with pagination
+
+Changes: 
+
+- I added a foreign key on event table and relations with monitoring table
+
+- I reorganized files about db inside `db` folder.
+
+- I changed types defined into schema.ts in oder to match with DB structures. (But I'm pretty sure some of the optional fields should not be optionnal).
+
+- I changed the way to generate seeds to be more efficient with data generation.
+
+#### Step 2: listening live db events insertion and expose serverless websocket
+
+I first tried to use SSE mechanism, but I didn't found lot of documentation about lambda and SSE... So I decide to go on websocket topic...
+
+After multiple investigation to use a classic solution (pg trigger + function + client.listen) to listen inserted events in `event` table.  
+I finally used supabase client (I'm not really ok with that !) to be able to listen db changes.
+
+Changes: 
+
+- I added a primary key (id) on `event` table.
+
+- I enabled `Database publication` on my `event` table in supabase.
+
+- I implemented a websocket endpoint in my serverless configuration and added corresponding handler to listen `event` table changes with supabase client.
+
+- I used same data mapper as in api router.
+
+- I configured esbuild to handle `pg` troubles on serverless deployment.
+
+BIG PROBLEM: My home "keep-alive mechanism seems to work only with "serverless dev" mode. Once deployed to real aws lambda, it doesn't work because the process seems to be closed intentionnaly (seems to be logic).
+
+#### Step 3: listening websocket messages on web app
+
+Changes:
+
+- many ui changes to display pages propertly
+
+- fetch monitoring detail + paginated events from the API (SSR)
+
+- listen events on web socket (client page)
+
+#### Step 4: simplify everything
+
+After looking at different solutions, it appears the more efficient way is to subscribe directly to supabase changes from the frontend application.
+
+I'm still not satisfied with this solution because I expose supabase credentials on the browser side.
+
+I would like to go deeper, maybe exposing a websocket with socket.io on server side which would be responsible for subscribe to supabase, and then retrieve events publications on client pages with this new channel.
+
+But we we encounter a new problem, because we will need to deploy a server instance somewhere as vercel is not compliant with WebSocket connections: https://socket.io/how-to/use-with-nextjs#server
+ Let's discuss about that...
+
+Changes:
+
+- remove serverless websocket
+
+- subscribe to supabase in next client component
+
+# Retrospective on my work
+
+I do not master the techs used inside this exercice.  So I will not discover all aspects right now. 
+
+I'm not very confident with my work about security and architecture as I never used SSR and serverless. But honestly, I'm not affraid to going deeper in understanding of these techniques.
+
+## The goods
+
+- I have fixed all bugs and implemented all asked features 
+
+- I tried to respect identified used tech
+
+- I digged a lot of solutions to understand the full problem. I observed that serverless applications have a lot of constraints
+
+## The bads
+
+- I did nothing about unit tests... This is not acceptable for production ready code !
+
+- I did not do validation on monitoring creation form (client side)
+
+- I did not do validation on API endpoints (server side)
+
+- I did not protect monitoring creation endpoint with authentication and authorizations
+
+- I did expose supabase credentials to browser side !

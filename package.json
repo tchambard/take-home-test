@@ -7,8 +7,9 @@
 	},
 	"scripts": {
 		"dev": "nx run-many -t serve",
-		"db:push": "nx run web:db:push",
-		"db:seed": "nx run web:db:seed"
+		"aws:deploy": "nx run lambda-monitoring:deploy",
+		"db:push": "nx run lambda-monitoring:db:push",
+		"db:seed": "nx run lambda-monitoring:db:seed"
 	},
 	"private": true,
 	"dependencies": {
@@ -16,6 +17,7 @@
 		"@babel/preset-react": "^7.22.5",
 		"@babel/preset-typescript": "^7.22.11",
 		"@next/bundle-analyzer": "^14.0.1",
+		"@supabase/supabase-js": "^2.44.4",
 		"@vercel/analytics": "^1.1.1",
 		"@vercel/speed-insights": "^1.0.10",
 		"drizzle-orm": "^0.31.0",
