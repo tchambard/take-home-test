@@ -88,9 +88,9 @@ Changes:
 
 - I changed the way to generate seeds to be more efficient with data generation.
 
-#### Step 2: listening events with websocket
+#### Step 2: listening live db events insertion and expose serverless websocket
 
-I first tried to use SSE mechanism, but I didn't found lot of documentation about lambda and SSE...
+I first tried to use SSE mechanism, but I didn't found lot of documentation about lambda and SSE... So I decide to go on websocket topic...
 
 After multiple investigation to use a classic solution (pg trigger + function + client.listen) to listen inserted events in `event` table.  
 I finally used supabase client (I'm not really ok with that !) to be able to listen db changes.
@@ -106,6 +106,20 @@ Changes:
 - I used same data mapper as in api router.
 
 - I configured esbuild to handle `pg` troubles on serverless deployment.
+
+BIG PROBLEM: My home "keep-alive mechanism seems to work only with "serverless dev" mode. Once deployed to real aws lambda, it doesn't work because the process seems to be closed intentionnaly (seems to be logic).
+
+#### Step 3: listening websocket messages on web app
+
+Changes:
+
+- many ui changes to display pages propertly
+
+- fetch monitoring detail + paginated events from the API (SSR)
+
+- listen events on web socket (client page)
+
+
 
 # Bad aspects of my work.
 

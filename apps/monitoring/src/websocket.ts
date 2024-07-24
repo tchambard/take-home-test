@@ -31,36 +31,39 @@ const sendMessage = async <T>(
 			ConnectionId: connectionId,
 			Data: JSON.stringify({
 				type,
-				data: payload ? JSON.stringify(payload) : undefined,
+				data: payload,
 			}),
 		})
 		.promise();
 };
 
-const keepAliveInterval = 3000; // 30 seconds
+const keepAliveInterval = 30000; // 3 seconds
 const connectionTimeout = 900000; // 15 minutes
 
 let channel: RealtimeChannel;
 
 // TODO: add missing types
 exports.handler = async (_event, context) => {
+	context.callbackWaitsForEmptyEventLoop = false;
+
 	const {
 		requestContext: { connectionId, routeKey },
 	} = _event;
-	console.log("context :>> ", context);
+
 	try {
 		switch (routeKey) {
 			case "$connect": {
+				console.log("> connected...");
 				break;
 			}
 			case "$disconnect": {
+				console.log("> disconnected...");
 				break;
 			}
 			case "$default": {
 				const { body } = _event;
-
+				console.log(`Message received: ${body}`);
 				let parsedBody: { type: "listen"; monitoringId: string };
-
 				try {
 					parsedBody = JSON.parse(body);
 				} catch (e) {
@@ -134,11 +137,18 @@ exports.handler = async (_event, context) => {
 		}
 	} catch (error) {
 		console.error("Error:", error);
+		await sendMessage(connectionId, "Internal server error", {
+			message: error.message,
+		});
 		return {
 			statusCode: 500,
-			body: JSON.stringify({ message: "Internal server error" }),
+			body: JSON.stringify({
+				message: "Internal server error",
+			}),
 		};
 	}
 
-	return { statusCode: 200 };
+	return {
+		statusCode: 200,
+	};
 };
