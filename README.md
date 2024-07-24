@@ -174,6 +174,13 @@ Changes:
 
 After looking at different solutions, it appears the more efficient way is to subscribe directly to supabase changes from the frontend application.
 
+I'm still not satisfied with this solution because I expose supabase credentials on the browser side.
+
+I would like to go deeper, maybe exposing a websocket with socket.io on server side which would be responsible for subscribe to supabase, and then retrieve events publications on client pages with this new channel.
+
+But we we encounter a new problem, because we will need to deploy a server instance somewhere as vercel is not compliant with WebSocket connections: https://socket.io/how-to/use-with-nextjs#server
+ Let's discuss about that...
+
 Changes:
 
 - remove serverless websocket
@@ -192,12 +199,16 @@ I'm not very confident with my work about security and architecture as I never u
 
 - I tried to respect identified used tech
 
+- I digged a lot of solutions to understand the full problem. I observed that serverless applications have a lot of constraints
+
 ## The bads
 
 - I did nothing about unit tests... This is not acceptable for production ready code !
 
-- I did not do validation on monitoring creation form
+- I did not do validation on monitoring creation form (client side)
 
-- I did not do validation on API endpoints
+- I did not do validation on API endpoints (server side)
 
-- I did not protected monitoring creation endpoint with authorizations
+- I did not protect monitoring creation endpoint with authentication and authorizations
+
+- I did expose supabase credentials to browser side !
