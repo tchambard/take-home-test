@@ -1,4 +1,4 @@
-import { addMonitoring } from "@/services/monitoring.svc";
+import { addMonitoring } from "@/services/monitoring.api";
 import Head from "next/head";
 import { redirect } from "next/navigation";
 
