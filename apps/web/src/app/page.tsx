@@ -17,6 +17,10 @@ async function Home({ searchParams }: HomeProps) {
 			currentPage,
 			itemsPerPage,
 		);
+
+		if (!monitorings || !info) {
+			return <></>;
+		}
 		return (
 			<div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
 				<div className="mb-8 flex flex-col sm:flex-row items-center justify-between">
@@ -31,7 +35,7 @@ async function Home({ searchParams }: HomeProps) {
 					</Link>
 				</div>
 
-				{monitorings.length === 0 ? (
+				{monitorings?.length === 0 ? (
 					<div className="text-center py-10">
 						<p className="text-xl text-gray-600">
 							No monitorings found. Create your first one!
@@ -39,12 +43,11 @@ async function Home({ searchParams }: HomeProps) {
 					</div>
 				) : (
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-						{monitorings.map(({ id, name, eventAbi, contractAddress }) => (
+						{monitorings?.map(({ id, name, eventAbi, contractAddress }) => (
 							<div key={id} className="w-full">
 								<Card
 									id={id.toString()}
 									name={name}
-									eventAbi={eventAbi}
 									contractAddress={truncateString(contractAddress, 12, 12)}
 								/>
 							</div>

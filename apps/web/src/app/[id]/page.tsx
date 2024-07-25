@@ -52,24 +52,26 @@ const MonitoringDetailPage: React.FC<MonitoringDetailPageProps> = async ({
 						<span className="font-medium text-gray-800">ID:</span>{" "}
 						{monitoring.id}
 					</div>
-					<div>
-						<span className="font-medium text-gray-800">Event ABI:</span>{" "}
-						{monitoring.eventAbi}
-					</div>
 					<div className="col-span-2">
 						<span className="font-medium text-gray-800">Contract address:</span>{" "}
 						{monitoring.contractAddress}
+					</div>
+					<div className="col-span-2">
+						<span className="font-medium text-gray-800">
+							Block hash at creation:
+						</span>{" "}
+						{monitoring.blockNumberAtCreation}
 					</div>
 				</div>
 			</div>
 
 			<div className="grid md:grid-cols-2 gap-8">
 				<MonitoringEventsHistory
-					monitoringId={id}
+					monitoringId={monitoring.id}
 					page={currentPage}
 					limit={itemsPerPage}
 				/>
-				<LiveMonitoringEvents monitoringId={id} />
+				<LiveMonitoringEvents monitoring={monitoring} />
 			</div>
 		</div>
 	);

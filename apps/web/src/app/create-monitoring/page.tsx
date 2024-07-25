@@ -1,4 +1,4 @@
-import { addMonitoring } from "@/services/monitoring.api";
+import { createMonitoring } from "@/services/monitoring.api";
 import Head from "next/head";
 import { redirect } from "next/navigation";
 
@@ -8,7 +8,7 @@ const addMonitoringAction = async (formData: FormData): Promise<void> => {
 	const name = formData.get("name") as string;
 	const eventAbi = formData.get("eventAbi") as string;
 	const contractAddress = formData.get("contractAddress") as string;
-	await addMonitoring(name, eventAbi, contractAddress);
+	await createMonitoring({ name, eventAbi, contractAddress });
 	// TODO: handle errors
 	redirect("/");
 };
