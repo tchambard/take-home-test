@@ -139,7 +139,7 @@ Changes:
 
 - I changed the way to generate seeds to be more efficient with data generation.
 
-#### Step 2: listening live db events insertion and expose serverless websocket
+#### Step 2: listening live db events insertion and expose serverless websocket (DEPRECATED)
 
 I first tried to use SSE mechanism, but I didn't found lot of documentation about lambda and SSE... So I decide to go on websocket topic...
 
@@ -160,7 +160,7 @@ Changes:
 
 BIG PROBLEM: My home "keep-alive mechanism seems to work only with "serverless dev" mode. Once deployed to real aws lambda, it doesn't work because the process seems to be closed intentionnaly (seems to be logic).
 
-#### Step 3: listening websocket messages on web app
+#### Step 3: listening websocket messages on web app (DEPRECATED)
 
 Changes:
 
@@ -170,7 +170,7 @@ Changes:
 
 - listen events on web socket (client page)
 
-#### Step 4: simplify everything
+#### Step 4: simplify everything (DEPRECATED)
 
 After looking at different solutions, it appears the more efficient way is to subscribe directly to supabase changes from the frontend application.
 
@@ -186,6 +186,34 @@ Changes:
 - remove serverless websocket
 
 - subscribe to supabase in next client component
+
+#### Step 5: reimplement monitoring after I understand the real subject :)
+
+This time everything is clear. 
+I implement a real monitoring that is looking at new events emmited by a smart contracts on ethereum mainnet.
+
+Changes:
+
+- I separated service logic from api router implementation
+
+- I changed data structure of event to be more more complete. I added a primary key based on a triplet to ensure that we do have duplicates.
+
+- I added current block hash at monitoring creation time.
+
+- I added `Lido DAO Token` into seed to be injected simply as example.
+
+- I instanciated one listener by event type in monitoring detail page in order to listen, save and display new events in live
+
+- I created a new API endpoint to create new event
+
+- I created a new API endpoint to trigger manually a fetch of all events from monitoring creation block hash
+
+- I create a new lambda function to update all events from monitoring creation block hash (update). I'm aware that I could have troubles here because I insert many records (by chunks) and some time some insertion could have been done by live monitoring listeners. I should handle this by retyring without already inserted elements (or by inserting one by one, but this is far less efficient)
+
+- I created a cron lambda function to trigger every 5 minutes one "update" lambda execution per monitoring.
+
+- I used Infura api key to prevent "too many calls"
+
 
 # Retrospective on my work
 
