@@ -15,11 +15,36 @@ build:
 provider:
   name: aws
   runtime: nodejs20.x
+  region: eu-central-1
+  stage: production
   memorySize: 1024
   environment:
       DATABASE_URL: ${env:DATABASE_URL}
+      UPDATE_FUNCTION_NAME: ${self:service}-${self:provider.stage}-update
+      INFURA_API_KEY: ${self:service}-${self:provider.stage}-update
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "arn:aws:lambda:${aws:region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-update"
+
 functions:
   api:
-    handler: src/router.handler
+    handler: src/api.handler
     events:
-      - httpApi: "*"
+      - httpApi:
+          path: /api/{proxy+}
+          method: ANY
+
+  update:
+    handler: src/update.handler
+    events:
+      - httpApi:
+          path: /update
+          method: ANY
+
+  cron:
+    handler: src/cron.handler
+    events:
+      - schedule: rate(5 minutes)

@@ -1,43 +1,67 @@
-import { pgTable, serial, text, unique } from "drizzle-orm/pg-core";
+import {
+	integer,
+	pgTable,
+	primaryKey,
+	serial,
+	text,
+	unique,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 
-// Maybe all fields should be mandatory ?
 export type MonitoringDb = {
 	id: number;
-	name: string | null;
-	eventAbi: string | null;
-	contractAddress: string | null;
+	name: string;
+	eventAbi: string;
+	contractAddress: string;
+	blockNumberAtCreation: string;
 };
 
-// Maybe all fields should be mandatory ?
 export type EventDb = {
-	id: number;
 	monitoringId: number;
-	transactionHash: string | null;
+	transactionHash: string;
+	logIndex: number;
+	eventName: string;
+	blockNumber: string;
+	blockHash: string;
 };
 
 export const monitoring = pgTable(
 	"monitoring",
 	{
 		id: serial("id").primaryKey(),
-		name: text("name"),
-		eventAbi: text("eventAbi"),
-		contractAddress: text("contractAddress"),
+		name: text("name").notNull(),
+		eventAbi: text("eventAbi").notNull(),
+		contractAddress: text("contractAddress").notNull(),
+		blockNumberAtCreation: text("blockNumberAtCreation").notNull(),
 	},
 	(table) => {
 		return {
 			uniqueContractAddress: unique().on(table.contractAddress),
+			onDelete: "cascade",
 		};
 	},
 );
 
-export const event = pgTable("event", {
-	id: serial("id").primaryKey(),
-	monitoringId: serial("monitoringId")
-		.notNull()
-		.references(() => monitoring.id),
-	transactionHash: text("transactionHash"),
-});
+export const event = pgTable(
+	"event",
+	{
+		monitoringId: serial("monitoringId")
+			.notNull()
+			.references(() => monitoring.id),
+		transactionHash: text("transactionHash").notNull(),
+		logIndex: integer("logIndex").notNull(),
+		eventName: text("eventName").notNull(),
+		blockNumber: text("blockNumber").notNull(),
+		blockHash: text("blockHash").notNull(),
+	},
+	(table) => {
+		return {
+			pk: primaryKey({
+				columns: [table.transactionHash, table.logIndex, table.eventName],
+			}),
+		};
+	},
+);
 
 export const monitoringRelations = relations(monitoring, ({ many }) => ({
 	events: many(event),

@@ -4,7 +4,7 @@ import MonitoringEventsTable from "./MonitoringEventsTable";
 import Pagination from "./pagination";
 
 interface MonitoringEventsHistoryProps {
-	monitoringId: string;
+	monitoringId: number;
 	page?: number;
 	limit: number;
 }

@@ -9,17 +9,27 @@ export type Page<T = object> = {
 	data: T[];
 };
 
-export type Monitoring = {
-	id: number;
+export type MonitoringCreate = {
 	name: string;
 	eventAbi: string;
 	contractAddress: string;
 };
 
-export type MonitoringEvent = {
+export type Monitoring = {
 	id: number;
-	monitoringId: string;
+	name: string;
+	eventAbi: string;
+	contractAddress: string;
+	blockNumberAtCreation: string;
+};
+
+export type MonitoringEvent = {
+	monitoringId: number;
 	transactionHash: string;
+	logIndex: number;
+	eventName: string;
+	blockNumber: string;
+	blockHash: string;
 };
 
 export async function getMonitoringsPage(
@@ -27,41 +37,62 @@ export async function getMonitoringsPage(
 	limit = 10,
 ): Promise<Page<Monitoring>> {
 	const res = await fetch(
-		`${process.env.AWS_LAMBDA_MONITORING_API_URL}/api/monitoring?page=${page}&limit=${limit}`,
+		`${process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_API_URL}/api/monitoring?page=${page}&limit=${limit}`,
 		{ cache: "no-store" },
 	);
 	return res.json();
 }
 
-export async function addMonitoring(
-	name: string,
-	eventAbi: string,
-	contractAddress: string,
+export async function createMonitoring(
+	monitoring: MonitoringCreate,
 ): Promise<void> {
-	await fetch(`${process.env.AWS_LAMBDA_MONITORING_API_URL}/api/monitoring`, {
-		method: "POST",
-		body: JSON.stringify({ name, eventAbi, contractAddress }),
-	});
+	await fetch(
+		`${process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_API_URL}/api/monitoring`,
+		{
+			method: "POST",
+			body: JSON.stringify(monitoring),
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+		},
+	);
 }
 
 export async function getMonitoringDetail(
 	monitoringId: string,
 ): Promise<Monitoring> {
 	const res = await fetch(
-		`${process.env.AWS_LAMBDA_MONITORING_API_URL}/api/monitoring/${monitoringId}`,
+		`${process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_API_URL}/api/monitoring/${monitoringId}`,
 		{ cache: "no-store" },
 	);
 	return res.json();
 }
 
 export async function getMonitoringEventsPage(
-	monitoringId: string,
+	monitoringId: number,
 	page = 1,
 	limit = 10,
 ): Promise<Page<MonitoringEvent>> {
 	const res = await fetch(
-		`${process.env.AWS_LAMBDA_MONITORING_API_URL}/api/monitoring/${monitoringId}/events?page=${page}&limit=${limit}`,
+		`${process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_API_URL}/api/monitoring/${monitoringId}/events?page=${page}&limit=${limit}`,
 		{ cache: "no-store" },
 	);
 	return res.json();
+}
+
+export async function createMonitoringEvent(
+	event: MonitoringEvent,
+): Promise<void> {
+	await fetch(
+		`${process.env.NEXT_PUBLIC_AWS_LAMBDA_MONITORING_API_URL}/api/monitoring/${event.monitoringId}/events`,
+		{
+			method: "POST",
+			body: JSON.stringify(event),
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+		},
+	);
 }

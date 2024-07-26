@@ -1,5 +1,6 @@
 import type React from "react";
 import "./global.css";
+import { Providers } from "@/component/WagmiProvider";
 
 function App({
 	children, // will be a page or nested layout
@@ -8,7 +9,9 @@ function App({
 }) {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<body>
+				<Providers>{children}</Providers>
+			</body>
 		</html>
 	);
 }
